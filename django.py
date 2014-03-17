@@ -80,6 +80,8 @@ def setup():
             _local_settings()
             local('python manage.py syncdb --noinput')
             local('python manage.py migrate')
+            if DJANGO_PROJECT == "intake_forms":
+                local('python manage.py load_fields')
 
 
 # Private, not picked up by Fabric
