@@ -4,7 +4,7 @@ Tyrel Souza <tsouza@propelmarketing.com>
 import sys, os
 
 from fabric.api import local, lcd
-from fabric.context_managers import shell_env
+from fabric import context_managers
 
 try:
     from projectconf import DJANGO_PROJECT, ENVIRONMENT_VARIABLES
@@ -18,7 +18,7 @@ def test():
     ENV['DEBUG'] = 'True'
     ENV['PRODUCTION'] = ''
     ENV['STAGING'] = 'True'
-    with shell_env(**ENV):
+    with context_managers.shell_env(**ENV):
         with lcd(_get_run_directory()):
             local('python manage.py test')
 
@@ -28,7 +28,7 @@ def copy_media():
     ENV['DEBUG'] = 'True'
     ENV['PRODUCTION'] = ''
     ENV['STAGING'] = 'True'
-    with shell_env(**ENV):
+    with context_managers.shell_env(**ENV):
         with lcd(_get_run_directory()):
             local('python manage.py sync_media_s3 -p media')
 
@@ -38,7 +38,7 @@ def development():
     ENV['DEBUG'] = 'True'
     ENV['PRODUCTION'] = 'False'
     ENV['STAGING'] = 'True'
-    with shell_env(**ENV):
+    with context_managers.shell_env(**ENV):
         with lcd(_get_run_directory()):
             local('python manage.py runserver')
 
@@ -48,7 +48,7 @@ def staging():
     ENV['DEBUG'] = 'False'
     ENV['PRODUCTION'] = 'False'
     ENV['STAGING'] = 'True'
-    with shell_env(**ENV):
+    with context_managers.shell_env(**ENV):
         with lcd(_get_run_directory()):
             local('python manage.py runserver')
 
@@ -58,7 +58,7 @@ def production():
     ENV['DEBUG'] = 'False'
     ENV['PRODUCTION'] = 'True'
     ENV['STAGING'] = 'False'
-    with shell_env(**ENV):
+    with context_managers.shell_env(**ENV):
         with lcd(_get_run_directory()):
             local('python manage.py runserver')
 
@@ -75,7 +75,7 @@ def setup():
 
     local('pip install -r requirements.txt --allow-all-external')
 
-    with shell_env(**ENV):
+    with context_managers.shell_env(**ENV):
         with lcd(cwd):
             _local_settings()
             local('python manage.py syncdb --noinput')
