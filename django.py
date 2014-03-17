@@ -118,10 +118,11 @@ def _do_env_setup():
 def _get_env_from_file():
     """Read KEY=VALUE in from the .env file"""
     ENV = {}
-    with open(".env", "r") as f:
-        for line in f:
-            key, value = line.rstrip("\n").split("=")
-            ENV[key] = value
+    if os.path.isfile(".env"):
+        with open(".env", "r") as f:
+            for line in f:
+                key, value = line.rstrip("\n").split("=")
+                ENV[key] = value
     return ENV
 
 def _write_env_to_file(ENV):
