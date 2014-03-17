@@ -3,8 +3,8 @@ Tyrel Souza <tsouza@propelmarketing.com>
 """
 import sys, os
 
-from fabric.api import local, lcd
-from fabric import context_managers
+from fabric.context_managers import shell_env
+from fabric.api import local, lcd, task
 
 try:
     from projectconf import DJANGO_PROJECT, ENVIRONMENT_VARIABLES
@@ -12,56 +12,62 @@ except:
     DJANGO_PROJECT = None
     ENVIRONMENT_VARIABLES = []
 
+@task
 def test():
     """Django: Runs the default tests"""
     ENV = _get_env_from_file()
     ENV['DEBUG'] = 'True'
     ENV['PRODUCTION'] = ''
     ENV['STAGING'] = 'True'
-    with context_managers.shell_env(**ENV):
+    with shell_env(**ENV):
         with lcd(_get_run_directory()):
             local('python manage.py test')
 
+@task
 def copy_media():
     """Django: Copies local media to s3"""
     ENV = _get_env_from_file()
     ENV['DEBUG'] = 'True'
     ENV['PRODUCTION'] = ''
     ENV['STAGING'] = 'True'
-    with context_managers.shell_env(**ENV):
+    with shell_env(**ENV):
         with lcd(_get_run_directory()):
             local('python manage.py sync_media_s3 -p media')
 
+@task
 def development():
     """Django: Run Server in Dev Mode"""
     ENV = _get_env_from_file()
     ENV['DEBUG'] = 'True'
     ENV['PRODUCTION'] = 'False'
     ENV['STAGING'] = 'True'
-    with context_managers.shell_env(**ENV):
+    with shell_env(**ENV):
         with lcd(_get_run_directory()):
             local('python manage.py runserver')
 
+@task
 def staging():
     """Django: Run server in Staging Mode"""
     ENV = _get_env_from_file()
     ENV['DEBUG'] = 'False'
     ENV['PRODUCTION'] = 'False'
     ENV['STAGING'] = 'True'
-    with context_managers.shell_env(**ENV):
+    with shell_env(**ENV):
         with lcd(_get_run_directory()):
             local('python manage.py runserver')
 
+@task
 def production():
     """Django: Run server in production mode """
     ENV = _get_env_from_file()
     ENV['DEBUG'] = 'False'
     ENV['PRODUCTION'] = 'True'
     ENV['STAGING'] = 'False'
-    with context_managers.shell_env(**ENV):
+    with shell_env(**ENV):
         with lcd(_get_run_directory()):
             local('python manage.py runserver')
 
+@task
 def setup():
     """Django: Setup Environment Variables, then pip install, then syncdb, finally migrate """
     ENV = _do_env_setup()
@@ -77,7 +83,7 @@ def setup():
     if DJANGO_PROJECT == "intake_forms":
         local('pip install -r requirements/local.txt')
 
-    with context_managers.shell_env(**ENV):
+    with shell_env(**ENV):
         with lcd(cwd):
             _local_settings()
             local('python manage.py syncdb --noinput')

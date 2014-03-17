@@ -1,6 +1,6 @@
 import re
 
-from fabric.api import local
+from fabric.api import local, task
 try:
     from projectconf import DJANGO_PROJECT, ENVIRONMENT_VARIABLES
 except ImportError:
@@ -8,6 +8,7 @@ except ImportError:
     ENVIRONMENT_VARIABLES = []
 
 
+@task
 def logs():
     """Heroku: Run the logs command """
     app = _prompt_for("app")
@@ -19,26 +20,31 @@ def logs():
         tail = ""
     local('heroku logs {0} --app {1}'.format(tail, app))
 
+@task
 def config():
     """Heroku: Shows remote config """
     app = _prompt_for("app")
     local('heroku config --app {0}'.format(app))
 
+@task
 def config_push():
     """Heroku: Pushes your local .env configuration to Heroku """
     app = _prompt_for("app")
     local('heroku config:push --app {0}'.format(app))
 
+@task
 def config_pull():
     """Heroku: Pulls your heroku configuration to your local .env file and prompts for overwrites """
     app = _prompt_for("app")
     local('heroku config:pull --overwrite --interactive --app {0}'.format(app))
 
+@task
 def collect_static():
     """Heroku: Collects Static on Heroku """
     app = _prompt_for("app")
     local('heroku run "cd {0};python manage.py collectstatic --noinput" --app {1}'.format(DJANGO_PROJECT,app))
 
+@task
 def deploy():
     """Heroku: Push to origin then deploy to heroku, puts in maintainence mode too """
     remote = _prompt_for("remote")
@@ -49,18 +55,21 @@ def deploy():
     local('git push {0} {1}:master'.format(remote, branch))
     local('heroku maintenance:off --app {0}'.format(app))
 
+@task
 def copy_database():
     """Heroku: Takes a database.dump file accessible from the web, and restores it into your heroku database """
     app = _prompt_for("app")
     location = raw_input("Where is the database dump file?: ").rstrip("\n")
     local("heroku pgbackups:restore DATABASE '{0}' --confirm {1}".format(location, app))
 
-def setup_heroku_remotes():
+@task
+def setup_remotes():
     """Heroku: Sets up the remotes in the format heroku-staging and heroku-production """
     project = raw_input("Project name? ").rstrip("\n")
     local('git remote add heroku-staging git@heroku.com:propel-{0}-staging.git'.format(project))
     local('git remote add heroku-production git@heroku.com:propel-{0}-production.git'.format(project))
 
+@task
 def setup_plugins():
     """Heroku: Checks if the plugins are setup correctly, and if they aren't, installs the plugins that the fabfile requires """
     app = _prompt_for("app")
@@ -72,11 +81,13 @@ def setup_plugins():
     local('heroku config:add BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi.git --app {0}'.format(app))
 
 
+@task
 def shell():
     """Heroku: Attaches itself to a django shell """
     app = _prompt_for("app")
     local('heroku run "cd {0};python manage.py shell" --app {1}'.format(DJANGO_PROJECT,app))
 
+@task
 def validate():
     """Heroku: Validates django project on Heroku"""
     app = _prompt_for("app")
