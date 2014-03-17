@@ -3,6 +3,7 @@ Fabric Scripts
 Collection of fabric scripts that can help Propel be better.
 
 
+
 ### In the project's root there needs to be a file called 'projectconf.py' with the following parameters:
 * ENVIRONMENT_VARIABLES A list of Environment variables to configure
 * DJANGO_PROJECT The name of the django project module
@@ -47,3 +48,8 @@ django settings, you need to know the project name to access settings, so you ca
     * Setup the heroku remotes in the format "propel-PROJECT-production" and
       "propel-PROJECT-staging" and prompting you for the project name. If the
 naming structure differs, please do this manually. 
+
+
+### Contributing
+If you contribute any code to the fabfile repository, please remember to update
+__init__.py with the function you added (or removed). Thank you.
