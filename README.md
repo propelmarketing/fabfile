@@ -1,6 +1,6 @@
 Fabric Scripts
 ==============
-Collection of fabfile scripts that can help Propel be better.
+Collection of fabric scripts that can help Propel be better.
 
 
 ### In the project's root there needs to be a file called 'projectconf.py' with the following parameters:
@@ -17,9 +17,9 @@ Example:
 The reasoning for this to be hardcoded is that it's a catch 22 to read from the
 django settings, you need to know the project name to access settings, so you can't store it in the django settings. (If anyone knows a better way to do this, please create a pull request!)
 
-#### Utility scripts:
-* $ fab help
-    * Displays some help to get you started.
+#### Core scripts:
+* $ fab update 
+    * Updates the fabfile submodule.
 
 #### Django Setup:
 * $ fab setup
