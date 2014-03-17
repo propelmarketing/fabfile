@@ -74,6 +74,8 @@ def setup():
         local('./scripts/setup_dev.sh')
 
     local('pip install -r requirements.txt --allow-all-external')
+    if DJANGO_PROJECT == "intake_forms":
+        local('pip install -r requirements/local.txt')
 
     with context_managers.shell_env(**ENV):
         with lcd(cwd):
