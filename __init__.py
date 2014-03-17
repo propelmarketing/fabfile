@@ -1,4 +1,4 @@
 import core
-import django
+import dj
 import heroku
 import responsive
