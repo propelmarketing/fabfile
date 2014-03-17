@@ -1,7 +1,11 @@
 import re
 
 from fabric.api import local
-from projectconf import DJANGO_PROJECT, ENVIRONMENT_VARIABLES
+try:
+    from projectconf import DJANGO_PROJECT, ENVIRONMENT_VARIABLES
+except ImportError:
+    DJANGO_PROJECT = None
+    ENVIRONMENT_VARIABLES = []
 
 
 def logs():

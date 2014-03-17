@@ -6,7 +6,11 @@ import sys, os
 from fabric.api import local, lcd
 from fabric.context_managers import shell_env
 
-from projectconf import DJANGO_PROJECT, ENVIRONMENT_VARIABLES
+try:
+    from projectconf import DJANGO_PROJECT, ENVIRONMENT_VARIABLES
+except:
+    DJANGO_PROJECT = None
+    ENVIRONMENT_VARIABLES = []
 
 def test():
     """Django: Runs the default tests"""
