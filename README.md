@@ -1,8 +1,7 @@
-Propel Toolbox
+Fabric Scripts
 ==============
-Collection of misc. scripts that can help Propel be better.
+Collection of fabfile scripts that can help Propel be better.
 
-## Fabric Scripts
 
 ### In the project's root there needs to be a file called 'projectconf.py' with the following parameters:
 * ENVIRONMENT_VARIABLES A list of Environment variables to configure

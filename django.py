@@ -23,7 +23,7 @@ def copy_media():
     ENV['STAGING'] = 'True'
     with shell_env(**ENV):
         with lcd(_get_run_directory()):
-            local('python manage.py sync_media_s3')
+            local('python manage.py sync_media_s3 -p media')
 
 def development():
     """Django: Run Server in Dev Mode"""
