@@ -55,6 +55,7 @@ def virtualenv():
 ##
 ## Main deployment function
 ##
+@task
 def deploy():
     # make sure all variables are all set and make understandable aliases
     if not _check_vars():
@@ -79,6 +80,7 @@ def deploy():
     start_gunicorn()
 
 # Atomic Functions
+@task
 def help():
     print """
         # LOCAL
@@ -102,6 +104,7 @@ def help():
         remote_migrate - migrate database on remote hosts
         """
 
+@task
 def test():
     print "Running tests locally...."
     with settings(warn_only=True):
@@ -110,20 +113,24 @@ def test():
     if result1.failed or result2.failed and not confirm('Test failed.  Continue anyway?'):
         abort('Aborting at user request.')
 
+@task
 def test_unit():
     print "Running Unit Tests"
     return local('sudo ./manage.py test %s.tests.unit' % env.app_name, capture=False)
     
+@task
 def test_fts():
     print "Running Integration Tests"
     local('cp -r ./fixtures/media ./')  # old assets need for test template
     return local('sudo ./manage.py test %s.tests.fts --liveserver localhost:8081' % env.app_name, capture=False)
 
+@task
 def push():
     print "Pushing local repository to main repository..."
     with settings(warn_only=True):
         local('hg push', capture=False)
 
+@task
 def update_code():
     if run("test -d %s" % env.remote_app_dir).failed:
         print "Remote App Directory does not exist"
@@ -134,11 +141,13 @@ def update_code():
         run('hg up')
 
 # Update any new dependencies
+@task
 def update_dependencies():
     if run("test -f %s/requirements.txt" % env.remote_app_dir).succeeded:
         with virtualenv():
             run("pip install -r requirements.txt")
 
+@task
 def remote_migrate():
     with cd(env.remote_app_dir):
         with virtualenv():
@@ -148,25 +157,30 @@ def _copy_media():
     with cd(env.remote_app_dir):
         sudo("cp -r {0}/template_assets ./media".format(env.remote_templates_dir))
 
+@task
 def collectstatic():
     with cd(env.remote_app_dir):
         with virtualenv():
             run('./manage.py collectstatic --noinput')
 
+@task
 def load_template():
     with cd(env.remote_app_dir):
         with virtualenv():
             run('./manage.py loaddata {0}'.format(env.remote_template_fixture))
 
+@task
 def stop_gunicorn():
     print "Stopping gunicorn servers using Supervisor"
     sudo('supervisorctl stop {0}'.format(env.app_name))
 
+@task
 def start_gunicorn():
     print "Starting gunicorn servers using Supervisor"
     sudo('supervisorctl start {0}'.format(env.app_name))
 
 ## Copied from the original development fabfile
+@task
 def deploy_localdev():
     # Prepare a local_settings.py if one isn't present
     local_settings_replacements = [
@@ -221,20 +235,24 @@ def _load_local_templates_fixtures():
     local("./manage.py loaddata {0}".format(env.local_template_fixture))  # has all available templates of repository
 
 
+@task
 def setup_localdev():
     _reset_dev_dbs()
     _load_dev_fixtures()
     copy_media_files()
 
+@task
 def setup_localtestdev():
     _reset_dev_dbs()
     _load_test_fixtures()
     copy_media_files()
 
+@task
 def copy_media_files():
     # Load media files
     local("cp -r {0}/template_assets ./media".format(env.local_templates_dir))
 
+@task
 def update_test_template():
     test_fixture = 'fixtures/test.yaml'
     with settings(warn_only=True):
@@ -245,6 +263,7 @@ def update_test_template():
     local("./manage.py dumpdata --format=yaml --indent=4 --natural\
             responsive auth.user admin sites agency > {0}".format(test_fixture))
 
+@task
 def update_dev_template():
     dev_fixture = 'fixtures/dev.yaml'
     with settings(warn_only=True):
@@ -264,6 +283,7 @@ def update_dev_template():
     
 
 # This method helps designers to dump template data and update to repository
+@task
 def dump_template():
     with settings(warn_only=True):
         if local("test -f %s" % env.local_template_fixture).succeeded:
