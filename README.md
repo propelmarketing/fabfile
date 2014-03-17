@@ -1,6 +1,7 @@
 Fabric Scripts
 ==============
-Collection of fabric scripts that can help Propel be better.
+Collection of fabric scripts that can help Propel be better. Written by
+Tyrel Souza <tsouza@propelmarketing.com>
 
 
 
