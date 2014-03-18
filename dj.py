@@ -90,7 +90,7 @@ def setup():
     if 'scripts' in os.listdir('.') and "setup_dev.sh" in os.listdir('scripts'):
         local('./scripts/setup_dev.sh')
 
-    local('pip install -r requirements.txt --allow-all-external')
+    local('pip install -r requirements.txt')
     if DJANGO_PROJECT == "intake_forms":
         local('pip install -r requirements/local.txt')
 
