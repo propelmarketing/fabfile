@@ -13,6 +13,17 @@ except:
     ENVIRONMENT_VARIABLES = []
 
 @task
+def superuser():
+    """Django: Creates Superuser"""
+    ENV = _get_env_from_file()
+    ENV['DEBUG'] = 'True'
+    ENV['PRODUCTION'] = ''
+    ENV['STAGING'] = 'True'
+    with shell_env(**ENV):
+        with lcd(_get_run_directory()):
+            local('python manage.py createsuperuser')
+
+@task
 def test():
     """Django: Runs the default tests"""
     ENV = _get_env_from_file()
