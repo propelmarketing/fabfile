@@ -107,6 +107,8 @@ def setup():
     """Django: Setup Environment Variables, then pip install, then syncdb, finally migrate """
     ENV = _do_env_setup()
     cwd = _get_run_directory()
+    ENV['CPPFLAGS']='-Qunused-arguments'
+    ENV['CFLAGS']='-Qunused-arguments'
 
     # Run bash scripts
     if 'scripts' in os.listdir('.') and "setup.sh" in os.listdir('scripts'):
