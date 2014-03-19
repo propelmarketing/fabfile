@@ -96,7 +96,7 @@ def setup():
 
     with shell_env(**ENV):
         with lcd(cwd):
-            _local_settings()
+            _local_settings(cwd)
             local('python manage.py syncdb --noinput')
             local('python manage.py migrate')
             if DJANGO_PROJECT == "intake_forms":
@@ -110,12 +110,12 @@ def _get_run_directory():
     else:
         cwd = '.'
     return cwd
-def _local_settings():
+def _local_settings(cwd):
     """
         Copies local_settings.py.default to local_settings.py if needed
         WILL NOT OVERRIDE
     """
-    files = os.listdir('.')
+    files = os.listdir(cwd)
     if "local_settings.py.default" in files and  "local_settings.py" not in files:
         local('cp local_settings.py.default local_settings.py')
 
