@@ -39,47 +39,48 @@ django settings, you need to know the project name to access settings, so you ca
     * Updates the fabfile submodule.
 
 #### Django Setup:
-* $ fab dj.setup
-    * This runs the setup scripts to get the django app working on your server.
-* $ fab dj.development
-    * This runs the development server.
-* $ fab dj.staging
-    * This runs the staging server.
-* $ fab dj.production 
-    * This runs the production server.
-* $ fab dj.test
-    * Runs the default tests. 
 * $ fab dj.copy_media
     * Copies local media to s3
+* $ fab dj.development
+    * This runs the development server.
+* $ fab dj.production 
+    * This runs the production server.
+* $ fab dj.setup
+    * This runs the setup scripts to get the django app working on your server.
 * $ fab dj.shell
     * Runs a Django Shell
+* $ fab dj.staging
+    * This runs the staging server.
 * $ fab dj.superuser
     * Create a Superuser with prompts
-
+* $ fab dj.test
+    * Runs the default tests. 
+* $ fab dj.update_agencies
+    * Update the agencies by pulling from central
 
 #### Heroku Setup:
-* $ fab heroku.deploy
-    * This prompts for the heroku remote app you want to use, then it turns
-      maintainence on for that branch,
-* $ fab heroku.copy_database
-    * This will prompt you where the X.dump file is located, then restore that
-      to the database.
-* $ fab heroku.setup_remotes
-    * Setup the heroku remotes in the format "propel-PROJECT-production" and
-      "propel-PROJECT-staging" and prompting you for the project name. If the
-naming structure differs, please do this manually. 
-* $ fab heroku.logs
-    * Show Heroku logs, prompts for tail or not.
+* $ fab heroku.collect_static
+    * Runs collect static on heroku
 * $ fab heroku.config
     * Show heroku config
 * $ fab heroku.config_push
     * Pushes local .env file to Heroku
 * $ fab heroku.config_pull
     * Pulls Heroku env into local .env file
-* $ fab heroku.collect_static
-    * Runs collect static on heroku
+* $ fab heroku.copy_database
+    * This will prompt you where the X.dump file is located, then restore that
+      to the database.
+* $ fab heroku.deploy
+    * This prompts for the heroku remote app you want to use, then it turns
+      maintainence on for that branch,
+* $ fab heroku.logs
+    * Show Heroku logs, prompts for tail or not.
 * $ fab heroku.setup_plugins
-    * Sets up the all the plugins and addons that we require to run a site on heroku.o
+    * Sets up the all the plugins and addons that we require to run a site on heroku.
+* $ fab heroku.setup_remotes
+    * Setup the heroku remotes in the format "propel-PROJECT-production" and
+      "propel-PROJECT-staging" and prompting you for the project name. If the
+naming structure differs, please do this manually. 
 * $ fab heroku.shell
     * Attaches to a heroku django shell.
 * $ fab heroku.validate
