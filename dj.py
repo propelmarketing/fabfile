@@ -91,7 +91,7 @@ def setup():
         local('./scripts/setup_dev.sh')
 
     local('pip install -r requirements.txt')
-    if DJANGO_PROJECT == "intake_forms":
+    if os.path.isfile("requirements/local.txt"):
         local('pip install -r requirements/local.txt')
 
     with shell_env(**ENV):
