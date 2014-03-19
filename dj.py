@@ -12,6 +12,30 @@ except:
     DJANGO_PROJECT = None
     ENVIRONMENT_VARIABLES = []
 
+
+@task
+def update_agencies():
+    """Django: Update Agencies"""
+    ENV = _get_env_from_file()
+    ENV['DEBUG'] = 'True'
+    ENV['PRODUCTION'] = ''
+    ENV['STAGING'] = 'True'
+    with shell_env(**ENV):
+        with lcd(_get_run_directory()):
+            local('python manage.py update_agencies')
+
+@task
+def shell():
+    """Django: Run Shell"""
+    ENV = _get_env_from_file()
+    ENV['DEBUG'] = 'True'
+    ENV['PRODUCTION'] = ''
+    ENV['STAGING'] = 'True'
+    with shell_env(**ENV):
+        with lcd(_get_run_directory()):
+            local('python manage.py shell')
+
+
 @task
 def superuser():
     """Django: Creates Superuser"""
@@ -50,7 +74,7 @@ def development():
     """Django: Run Server in Dev Mode"""
     ENV = _get_env_from_file()
     ENV['DEBUG'] = 'True'
-    ENV['PRODUCTION'] = 'False'
+    ENV['PRODUCTION'] = ''
     ENV['STAGING'] = 'True'
     with shell_env(**ENV):
         with lcd(_get_run_directory()):
@@ -60,8 +84,8 @@ def development():
 def staging():
     """Django: Run server in Staging Mode"""
     ENV = _get_env_from_file()
-    ENV['DEBUG'] = 'False'
-    ENV['PRODUCTION'] = 'False'
+    ENV['DEBUG'] = ''
+    ENV['PRODUCTION'] = ''
     ENV['STAGING'] = 'True'
     with shell_env(**ENV):
         with lcd(_get_run_directory()):
@@ -71,9 +95,9 @@ def staging():
 def production():
     """Django: Run server in production mode """
     ENV = _get_env_from_file()
-    ENV['DEBUG'] = 'False'
+    ENV['DEBUG'] = ''
     ENV['PRODUCTION'] = 'True'
-    ENV['STAGING'] = 'False'
+    ENV['STAGING'] = ''
     with shell_env(**ENV):
         with lcd(_get_run_directory()):
             local('python manage.py runserver')
