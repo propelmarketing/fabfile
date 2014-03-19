@@ -87,10 +87,5 @@ naming structure differs, please do this manually.
 
 
 
-
-
-
-
 ### Contributing
-If you contribute any code to the fabfile repository, please remember to update
-__init__.py with the function you added (or removed). Thank you.
+If you contribute any code to the fabfile repository, please remember to update \__init__.py with the module n you added (or removed). Thank you.
