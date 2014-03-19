@@ -12,6 +12,30 @@ except:
     DJANGO_PROJECT = None
     ENVIRONMENT_VARIABLES = []
 
+
+@task
+def update_agencies():
+    """Django: Update Agencies"""
+    ENV = _get_env_from_file()
+    ENV['DEBUG'] = 'True'
+    ENV['PRODUCTION'] = ''
+    ENV['STAGING'] = 'True'
+    with shell_env(**ENV):
+        with lcd(_get_run_directory()):
+            local('python manage.py update_agencies')
+
+@task
+def shell():
+    """Django: Run Shell"""
+    ENV = _get_env_from_file()
+    ENV['DEBUG'] = 'True'
+    ENV['PRODUCTION'] = ''
+    ENV['STAGING'] = 'True'
+    with shell_env(**ENV):
+        with lcd(_get_run_directory()):
+            local('python manage.py shell')
+
+
 @task
 def superuser():
     """Django: Creates Superuser"""
@@ -50,7 +74,7 @@ def development():
     """Django: Run Server in Dev Mode"""
     ENV = _get_env_from_file()
     ENV['DEBUG'] = 'True'
-    ENV['PRODUCTION'] = 'False'
+    ENV['PRODUCTION'] = ''
     ENV['STAGING'] = 'True'
     with shell_env(**ENV):
         with lcd(_get_run_directory()):
@@ -60,8 +84,8 @@ def development():
 def staging():
     """Django: Run server in Staging Mode"""
     ENV = _get_env_from_file()
-    ENV['DEBUG'] = 'False'
-    ENV['PRODUCTION'] = 'False'
+    ENV['DEBUG'] = ''
+    ENV['PRODUCTION'] = ''
     ENV['STAGING'] = 'True'
     with shell_env(**ENV):
         with lcd(_get_run_directory()):
@@ -71,9 +95,9 @@ def staging():
 def production():
     """Django: Run server in production mode """
     ENV = _get_env_from_file()
-    ENV['DEBUG'] = 'False'
+    ENV['DEBUG'] = ''
     ENV['PRODUCTION'] = 'True'
-    ENV['STAGING'] = 'False'
+    ENV['STAGING'] = ''
     with shell_env(**ENV):
         with lcd(_get_run_directory()):
             local('python manage.py runserver')
@@ -83,6 +107,8 @@ def setup():
     """Django: Setup Environment Variables, then pip install, then syncdb, finally migrate """
     ENV = _do_env_setup()
     cwd = _get_run_directory()
+    ENV['CPPFLAGS']='-Qunused-arguments'
+    ENV['CFLAGS']='-Qunused-arguments'
 
     # Run bash scripts
     if 'scripts' in os.listdir('.') and "setup.sh" in os.listdir('scripts'):
@@ -96,7 +122,7 @@ def setup():
 
     with shell_env(**ENV):
         with lcd(cwd):
-            _local_settings()
+            _local_settings(cwd)
             local('python manage.py syncdb --noinput')
             local('python manage.py migrate')
             if DJANGO_PROJECT == "intake_forms":
@@ -110,12 +136,12 @@ def _get_run_directory():
     else:
         cwd = '.'
     return cwd
-def _local_settings():
+def _local_settings(cwd):
     """
         Copies local_settings.py.default to local_settings.py if needed
         WILL NOT OVERRIDE
     """
-    files = os.listdir('.')
+    files = os.listdir(cwd)
     if "local_settings.py.default" in files and  "local_settings.py" not in files:
         local('cp local_settings.py.default local_settings.py')
 
