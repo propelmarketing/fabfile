@@ -20,7 +20,7 @@ Tyrel Souza <tsouza@propelmarketing.com>
  $ fab core.update
 ```
 
-### In the project's root there needs to be a file called 'projectconf.py' with the following parameters:
+### In the project's root there needs to be a file called 'projectconf.py' (projectconf.py.sample provided) with the following parameters:
 * ENVIRONMENT_VARIABLES A list of Environment variables to configure
 * DJANGO_PROJECT The name of the django project module
 
