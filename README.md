@@ -35,7 +35,7 @@ The reasoning for this to be hardcoded is that it's a catch 22 to read from the
 django settings, you need to know the project name to access settings, so you can't store it in the django settings. (If anyone knows a better way to do this, please create a pull request!)
 
 #### Core scripts:
-* $ fab update 
+* $ fab core.update 
     * Updates the fabfile submodule.
 
 #### Django Setup:
