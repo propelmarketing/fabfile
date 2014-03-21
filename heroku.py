@@ -41,9 +41,11 @@ def config_pull():
 def copy_database():
     """Heroku: Takes a database.dump file accessible from the web, and restores it into your heroku database """
     app = _prompt_for("app")
+
     location = raw_input("Where is the database dump file?: ").rstrip("\n")
+    database = _prompt_for("database", extra=app)
     local(
-        "heroku pgbackups:restore DATABASE '{0}' --confirm {1}".format(location, app))
+        "heroku pgbackups:restore {0} '{1}' --confirm {2}".format(database, location, app))
 
 
 @task
@@ -110,15 +112,25 @@ def validate():
     local(
         'heroku run "cd {0};python manage.py validate" --app {1}'.format(DJANGO_PROJECT, app))
 
+@task
+def get_database_dump():
+    database = raw_input("Database name: ").rstrip("\n")
+    ip = raw_input("IP of Remote: ").rstrip("\n")
+    local('createdb -Upostgres {0}'.format(database))
+    local('taps pull postgres://postgres@localhost/{0} http://user:pass@{1}:5000'.format(database, ip))
+    local('pg_dump -Fc --no-acl --no-owner -h localhost -U postgres {0} > {0}.dump'.format(database))
+
 # Private, not picked up by Fabric
 
 
-def _prompt_for(option_name):
+def _prompt_for(option_name, extra=None):
     """ Prompt for which heroku app, retries if fails"""
     if option_name == "remote":
         options, mapping, option_strings = _remotes()
     elif option_name == "app":
         options, mapping, option_strings = _apps()
+    elif option_name == "database":
+        options, mapping, option_strings = _databases(extra)
     if not options:
         return None
 
@@ -135,6 +147,12 @@ def _prompt_for(option_name):
     return option
 
 
+
+def _databases(extra):
+    databases = _get_heroku_databases(app=extra)
+    mapping, database_strings = _map_list_to_numbers(databases)
+    return databases, mapping, database_strings
+
 def _remotes():
     remotes = _get_heroku_remotes()
     mapping, remote_strings = _map_list_to_numbers(remotes)
@@ -146,6 +164,13 @@ def _apps():
     mapping, app_strings = _map_list_to_numbers(apps)
     return apps, mapping, app_strings
 
+
+def _get_heroku_databases(app=None):
+    if not app:
+        return "DATABASE"
+    ugly = local('heroku pg:info --app {0}'.format(app), capture=True)
+    regex = re.compile("HEROKU_POSTGRESQL_[A-Z]+_URL")
+    return regex.findall(ugly)
 
 def _get_heroku_remotes():
     """Get a list of all the heroku remotes"""
