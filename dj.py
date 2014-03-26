@@ -91,6 +91,17 @@ def setup():
             if DJANGO_PROJECT == "intake_forms":
                 local('python manage.py load_fields')
 
+@task
+def local_agency():
+    """Django: setup an agency to be used with localhost"""
+    ENV = _get_env_from_file()
+    ENV['DEBUG'] = 'True'
+    ENV['PRODUCTION'] = ''
+    ENV['STAGING'] = 'True'
+    with shell_env(**ENV):
+        with lcd(_get_run_directory()):
+            local('python manage.py local_agency')
+
 
 # Private, not picked up by Fabric
 def _get_run_directory():
