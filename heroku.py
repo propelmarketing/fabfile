@@ -95,6 +95,20 @@ def setup_remotes():
 
 
 @task
+def rails_c():
+    """Heroku: Run rails command"""
+    app = _prompt_for("app")
+    command = _get_command("rails")
+    local('heroku run "rails {0}" --app {1}'.format(command, app))
+
+@task
+def rake():
+    """Heroku: Run rake command"""
+    app = _prompt_for("app")
+    command = _get_command("rake")
+    local('heroku run "rake {0}" --app {1}'.format(command, app))
+
+@task
 def shell():
     """Heroku: Attaches itself to a django shell """
     app = _prompt_for("app")
@@ -116,6 +130,10 @@ def get_database_dump():
     local('pg_dump -Fc --no-acl --no-owner -h localhost -U postgres {0} > {0}.dump'.format(database))
 
 
+
+def _get_command(cmd):
+    command = raw_input("Type a {0} command: ".format(cmd)).rstrip("\n")
+    return command
 
 # Private, not picked up by Fabric
 def _prompt_for(option_name, extra=None):
